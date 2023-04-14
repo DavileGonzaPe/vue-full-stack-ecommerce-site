@@ -13,7 +13,11 @@ const routes = [
     {
         path: '/products/:productId',
         component: () => import(/* webpackChunkName: "product detail" */ '../pages/ProductDetailPage.vue')
-    }
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        component: () => import(/* webpackChunkName: "not found page" */ '../pages/NotFoundPage.vue')
+    },
 ]
 
 const router = createRouter({
