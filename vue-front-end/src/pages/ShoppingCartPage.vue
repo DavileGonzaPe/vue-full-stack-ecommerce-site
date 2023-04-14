@@ -1,14 +1,7 @@
 <template>
     <h1>Shopping Cart</h1>
     <div v-if="cartItems.length > 0">
-        <div class="product-container" v-for="product in cartItems" :key="product.id">
-            <img class="product-image" :src="product.imageName" :alt="product.name">
-            <div class="details-wrap">
-                <h3>{{ product.name }}</h3>
-                <p>{{ product.price }}</p>
-            </div>
-            <button class="remove-button">Remove from Cart</button>
-        </div>
+        <ShoppingCartList :products="cartItems"/>
         <button class="checkout-button">Proceed to Checkout</button>
     </div>
     <div v-else>
@@ -17,14 +10,17 @@
 </template>
 
 <script>
+import ShoppingCartList from '@/components/ShoppingCartList.vue';
 import { cartItems } from '../temp-data'
 
 export default {
-    name: 'ShoppingCartPage',
+    name: "ShoppingCartPage",
+    components: { ShoppingCartList },
     setup() {
         return {
             cartItems,
-        }
-    }
+        };
+    },
+    
 }
 </script>
