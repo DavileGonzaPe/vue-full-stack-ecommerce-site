@@ -19,7 +19,7 @@ import { products } from '../temp-data'
 
 export default {
     name: 'ProductsPage',
-    data() {
+    setup() {
         return {
             products,
         }
