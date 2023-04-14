@@ -14,10 +14,10 @@ import { useRoute } from 'vue-router';
 import { products } from '../temp-data'
 
 export default {
-    name: "ProductDetailPage",
+    name: 'ProductDetailPage',
     setup() {
         const route = useRoute()
-        
+
         return {
             product: products.find(product => product.id === route.params.productId),
         }
