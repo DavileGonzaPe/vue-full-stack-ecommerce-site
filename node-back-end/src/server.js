@@ -7,6 +7,10 @@ let products = productsRaw;
 const app = express();
 app.use(express.json());
 
+function populateCartIds(ids) {
+    return ids.map(id => products.find(product => product.id === id));
+}
+
 app.get('/hello', (req, res) => {
     res.send('Hello!');
 })
@@ -18,7 +22,8 @@ app.get('/products', (req, res) => {
 
 // Get user shopping cart
 app.get('/cart', (req, res) => {
-    res.json(cartItems);
+    const populatedCart = populateCartIds(cartItems);
+    res.json(populatedCart);
 });
 
 // Get a product by id
@@ -31,16 +36,17 @@ app.get('/products/:productId', (req, res) => {
 // Add item to user cart
 app.post('/cart', (req, res) => {
     const productId = req.body.id;
-    const product = products.find(product => product.id === productId);
-    cartItems.push(product);
-    res.json(cartItems);
+    cartItems.push(productId);
+    const populatedCart = populateCartIds(cartItems)
+    res.json(populatedCart);
 })
 
 // Remove item from user cart
 app.delete('/cart/:productId', (req, res) => {
     const productId = req.params.productId;
-    cartItems = cartItems.filter(product => product.id !== productId);
-    res.json(cartItems);
+    cartItems = cartItems.filter(id => id !== productId);
+    const populatedCart = populateCartIds(cartItems)
+    res.json(populatedCart);
 })
 
 
