@@ -37,6 +37,12 @@ app.post('/cart', (req, res) => {
 })
 
 // Remove item from user cart
+app.delete('/cart/:productId', (req, res) => {
+    const productId = req.params.productId;
+    cartItems = cartItems.filter(product => product.id !== productId);
+    res.json(cartItems);
+})
+
 
 app.listen(8000, () => {
     console.log('Server is listening on port 8000');
