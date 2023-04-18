@@ -6,11 +6,11 @@
         <div class="product-details">
             <h1>{{ product.name }}</h1>
             <h3 class="price">{{ product.price }}</h3>
-            <button class="add-to-cart">Add to cart</button>
+            <button @click="addToCart" class="add-to-cart">Add to cart</button>
         </div>
     </div>
     <div v-else>
-        <NotFoundPage/>
+        <NotFoundPage />
     </div>
 </template>
 
@@ -27,16 +27,25 @@ export default {
         const route = useRoute();
         let product = ref([]);
 
-        onBeforeMount(async() => {
+        onBeforeMount(async () => {
             const response = await axios.get(`/api/products/${route.params.productId}`);
             product.value = response.data;
         });
 
+        const addToCart = async () => {
+            try {
+                await axios.post('/api/users/12345/cart', { id: route.params.productId });
+                alert('Succesfully added item to cart!');
+            } catch (error) {
+                console.log(error);
+            }
+        };
 
         return {
-            product
+            product,
+            addToCart,
         };
     },
-    
+
 }
 </script>
