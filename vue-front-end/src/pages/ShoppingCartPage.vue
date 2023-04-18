@@ -10,13 +10,21 @@
 </template>
 
 <script>
+import { ref, onBeforeMount } from 'vue';
 import ShoppingCartList from '@/components/ShoppingCartList.vue';
-import { cartItems } from '../temp-data'
+import axios from 'axios';
 
 export default {
     name: "ShoppingCartPage",
     components: { ShoppingCartList },
     setup() {
+        const cartItems = ref([]);
+
+        onBeforeMount(async () => {
+            const response = await axios.get('/api/users/12345/cart');
+            cartItems.value = response.data;
+        });
+
         return {
             cartItems,
         };

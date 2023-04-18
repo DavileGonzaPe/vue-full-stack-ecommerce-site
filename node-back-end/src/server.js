@@ -1,5 +1,6 @@
 import express from 'express';
 import { MongoClient, ServerApiVersion } from 'mongodb';
+import path from 'path';
 
 async function start() {
     const uri = "mongodb+srv://davile:OGcetRbVNpcV6UqF@cluster0.gssuz0t.mongodb.net/?retryWrites=true&w=majority";
@@ -16,6 +17,7 @@ async function start() {
 
     const app = express();
     app.use(express.json());
+    app.use('/images', express.static(path.join(__dirname, '../assets')));
 
     async function populateCartIds(ids) {
         return Promise.all(ids.map(id => db.collection('products').findOne({ id })));

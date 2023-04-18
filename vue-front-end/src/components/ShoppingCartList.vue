@@ -1,6 +1,6 @@
 <template>
     <div class="product-container" v-for="product in products" :key="product.id">
-        <img class="product-image" :src="product.imageName" :alt="product.name">
+        <img class="product-image" :src="product.imageUrl" :alt="product.name">
         <div class="details-wrap">
             <h3>{{ product.name }}</h3>
             <p>{{ product.price }}</p>
