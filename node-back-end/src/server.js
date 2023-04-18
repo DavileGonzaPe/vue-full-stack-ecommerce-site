@@ -18,25 +18,26 @@ let products = productsRaw;
 const app = express();
 app.use(express.json());
 
-function populateCartIds(ids) {
-    return ids.map(id => products.find(product => product.id === id));
+async function populateCartIds(ids) {
+    await client.connect();
+    const db = client.db('fullstackvue-db');
+    return Promise.all(ids.map(id => db.collection('products').findOne({ id })));
 }
 
-app.get('/hello', async (req, res) => {
+// Get all the products
+app.get('/products', async (req, res) => {
     await client.connect();
     const db = client.db('fullstackvue-db');
     const products = await db.collection('products').find({}).toArray();
     res.send(products);
-})
-
-// Get all the products
-app.get('/products', (req, res) => {
-    res.json(products);
 });
 
 // Get user shopping cart
-app.get('/cart', (req, res) => {
-    const populatedCart = populateCartIds(cartItems);
+app.get('/users/:userId/cart', async (req, res) => {
+    await client.connect();
+    const db = client.db('fullstackvue-db');
+    const user = await db.collection('users').findOne({ id: req.params.userId });
+    const populatedCart = await populateCartIds(user.cartItems);
     res.json(populatedCart);
 });
 
