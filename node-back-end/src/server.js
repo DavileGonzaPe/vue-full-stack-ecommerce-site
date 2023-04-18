@@ -1,9 +1,5 @@
 import express from 'express';
 import { MongoClient, ServerApiVersion } from 'mongodb';
-import { cartItems as cartItemsRaw, products as productsRaw } from './temp-data';
-
-let cartItems = cartItemsRaw;
-let products = productsRaw;
 
 async function start() {
     const uri = "mongodb+srv://davile:OGcetRbVNpcV6UqF@cluster0.gssuz0t.mongodb.net/?retryWrites=true&w=majority";
@@ -60,10 +56,16 @@ async function start() {
     });
 
     // Remove item from user cart
-    app.delete('/cart/:productId', (req, res) => {
+    app.delete('/users/:userId/cart/:productId', async (req, res) => {
+        const userId = req.params.userId;
         const productId = req.params.productId;
-        cartItems = cartItems.filter(id => id !== productId);
-        const populatedCart = populateCartIds(cartItems)
+
+        await db.collection('users').updateOne({ id: userId }, {
+            $pull: { cartItems: productId }
+        });
+
+        const user = await db.collection('users').findOne({ id: req.params.userId });
+        const populatedCart = await populateCartIds(user.cartItems);
         res.json(populatedCart);
     })
 
