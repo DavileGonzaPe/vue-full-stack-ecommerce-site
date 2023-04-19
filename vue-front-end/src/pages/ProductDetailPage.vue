@@ -6,9 +6,9 @@
         <div class="product-details">
             <h1>{{ product.name }}</h1>
             <h3 class="price">{{ product.price }}</h3>
-            <button v-if="!itemIsInCart" @click="addToCart" class="add-to-cart">Add to cart</button>
-            <button v-else-if="itemIsInCart" class="grey-button" >Item is already in cart</button>
-            <button class="sign-in" @click="signIn">Sign in to add to cart</button>
+            <button v-if="user && !itemIsInCart" @click="addToCart" class="add-to-cart">Add to cart</button>
+            <button v-else-if="user && itemIsInCart" class="grey-button">Item is already in cart</button>
+            <button v-else-if="!user" class="sign-in" @click="signIn">Sign in to add to cart</button>
         </div>
     </div>
     <div v-else>
@@ -20,16 +20,26 @@
 import axios from 'axios';
 import { useRoute } from 'vue-router';
 import NotFoundPage from './NotFoundPage.vue';
-import { ref, onBeforeMount, computed } from 'vue';
+import { ref, onBeforeMount, computed, watch } from 'vue';
 import { getAuth, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth'
 
 export default {
-    name: "ProductDetailPage",
+    name: "ProductDetailPage",    
     components: { NotFoundPage },
-    setup() {
+    props: ['user'],
+
+    setup(props) {
         const route = useRoute();
         let product = ref([]);
         let cartItems = ref([]);
+        const loggedUser = ref(props.user);
+
+        watch(loggedUser, async (newUserValue) => {
+            if (newUserValue) {
+                const cartResponse = await axios.get(`/api/users/${newUserValue.uid}/cart`);
+                cartItems.value = cartResponse.data;
+            }
+        })
 
         onBeforeMount(async () => {
             const auth = getAuth();
@@ -43,8 +53,11 @@ export default {
             const response = await axios.get(`/api/products/${route.params.productId}`);
             product.value = response.data;
 
-            const cartResponse = await axios.get('/api/users/12345/cart');
-            cartItems.value = cartResponse.data;
+            if (loggedUser.value) {
+                const cartResponse = await axios.get(`/api/users/${loggedUser.value.uid}/cart`);
+                cartItems.value = cartResponse.data;
+            }
+
         });
 
         const addToCart = async () => {
@@ -59,7 +72,7 @@ export default {
         async function signIn() {
             const email = prompt('Please enter your email to sign in: ');
             const auth = getAuth();
-            const actionCodeSettings = { 
+            const actionCodeSettings = {
                 url: `http://localhost:8080/products/${route.params.productId}`,
                 handleCodeInApp: true,
             };
@@ -69,6 +82,7 @@ export default {
         }
 
         return {
+            loggedUser,
             product,
             itemIsInCart: computed(() => cartItems.value.some((item => item.id === route.params.productId))),
             addToCart,
