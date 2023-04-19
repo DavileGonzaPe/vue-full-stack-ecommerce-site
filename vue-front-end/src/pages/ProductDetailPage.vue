@@ -8,7 +8,7 @@
             <h3 class="price">{{ product.price }}</h3>
             <button v-if="!itemIsInCart" @click="addToCart" class="add-to-cart">Add to cart</button>
             <button v-else-if="itemIsInCart" class="grey-button" >Item is already in cart</button>
-            <button class="sign in" @click="signIn">Sign in to add to cart</button>
+            <button class="sign-in" @click="signIn">Sign in to add to cart</button>
         </div>
     </div>
     <div v-else>
@@ -32,6 +32,14 @@ export default {
         let cartItems = ref([]);
 
         onBeforeMount(async () => {
+            const auth = getAuth();
+            if (isSignInWithEmailLink(auth, window.location.href)) {
+                const email = window.localStorage.getItem('emailForSignIn');
+                await signInWithEmailLink(auth, email, window.location.href);
+                alert('Successfully signed in!');
+                window.localStorage.removeItem('emailForSignIn');
+            }
+
             const response = await axios.get(`/api/products/${route.params.productId}`);
             product.value = response.data;
 
@@ -48,14 +56,16 @@ export default {
             }
         };
 
-        function signIn() {
+        async function signIn() {
             const email = prompt('Please enter your email to sign in: ');
             const auth = getAuth();
             const actionCodeSettings = { 
                 url: `http://localhost:8080/products/${route.params.productId}`,
                 handleCodeInApp: true,
             };
-            sendSignInLinkToEmail(auth, email, actionCodeSettings);
+            await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+            alert('A login email was sent to the email you provided');
+            window.localStorage.setItem('emailForSignIn', email);
         }
 
         return {
