@@ -7,7 +7,8 @@
             <h1>{{ product.name }}</h1>
             <h3 class="price">{{ product.price }}</h3>
             <button v-if="!itemIsInCart" @click="addToCart" class="add-to-cart">Add to cart</button>
-            <button v-else class="grey-button" >Item is already in cart</button>
+            <button v-else-if="itemIsInCart" class="grey-button" >Item is already in cart</button>
+            <button class="sign in" @click="signIn">Sign in to add to cart</button>
         </div>
     </div>
     <div v-else>
@@ -20,6 +21,7 @@ import axios from 'axios';
 import { useRoute } from 'vue-router';
 import NotFoundPage from './NotFoundPage.vue';
 import { ref, onBeforeMount, computed } from 'vue';
+import { getAuth, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth'
 
 export default {
     name: "ProductDetailPage",
@@ -46,10 +48,21 @@ export default {
             }
         };
 
+        function signIn() {
+            const email = prompt('Please enter your email to sign in: ');
+            const auth = getAuth();
+            const actionCodeSettings = { 
+                url: `http://localhost:8080/products/${route.params.productId}`,
+                handleCodeInApp: true,
+            };
+            sendSignInLinkToEmail(auth, email, actionCodeSettings);
+        }
+
         return {
             product,
             itemIsInCart: computed(() => cartItems.value.some((item => item.id === route.params.productId))),
             addToCart,
+            signIn,
         };
     },
 
