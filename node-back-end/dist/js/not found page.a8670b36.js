@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkvue_front_end"]=self["webpackChunkvue_front_end"]||[]).push([[723],{4883:function(n,e,u){u.r(e),u.d(e,{default:function(){return c}});var r=u(3396);function t(n,e,u,t,o,a){return(0,r.wg)(),(0,r.iD)("h1",null,"404: Page Not Found")}var o={name:"NotFoundPage"},a=u(89);const f=(0,a.Z)(o,[["render",t]]);var c=f}}]);
+//# sourceMappingURL=not found page.a8670b36.js.map
