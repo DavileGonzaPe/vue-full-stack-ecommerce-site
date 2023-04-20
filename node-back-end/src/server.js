@@ -4,14 +4,7 @@ import path from 'path';
 
 async function start() {
     const uri = "mongodb+srv://davile:OGcetRbVNpcV6UqF@cluster0.gssuz0t.mongodb.net/?retryWrites=true&w=majority";
-    // Create a MongoClient with a MongoClientOptions object to set the Stable API version
-    const client = new MongoClient(uri, {
-        serverApi: {
-            version: ServerApiVersion.v1,
-            strict: true,
-            deprecationErrors: true,
-        }
-    });
+    const client = new MongoClient(uri);
     await client.connect();
     const db = client.db('fullstackvue-db');
 
