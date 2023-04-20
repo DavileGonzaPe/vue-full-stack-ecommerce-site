@@ -39,7 +39,7 @@ export default {
                 const cartResponse = await axios.get(`/api/users/${newUserValue.uid}/cart`);
                 cartItems.value = cartResponse.data;
             }
-        })
+        });
 
         onBeforeMount(async () => {
             const auth = getAuth();
@@ -62,7 +62,7 @@ export default {
 
         const addToCart = async () => {
             try {
-                await axios.post('/api/users/12345/cart', { id: route.params.productId });
+                await axios.post(`/api/users/${loggedUser.value.uid}/cart`, { id: route.params.productId });
                 alert('Succesfully added item to cart!');
             } catch (error) {
                 console.log(error);
