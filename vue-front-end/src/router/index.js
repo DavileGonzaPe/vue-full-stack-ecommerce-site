@@ -2,6 +2,10 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
     {
+        path: '/',
+        redirect: '/products'
+    }, 
+    {
         path: '/cart',
         name: 'cart',
         component: () => import(/* webpackChunkName: "cart" */ '../pages/ShoppingCartPage.vue')
