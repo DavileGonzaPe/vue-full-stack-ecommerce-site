@@ -5,21 +5,36 @@
                 <img :src="logo" alt="hexagon logo">
             </div>
         </router-link>
-        <router-link to="/cart" class="cart-link">
-            <button>Shopping Cart</button>
-        </router-link>
+        <div class="nav-buttons-wrap">
+            <button v-if="user" @click="signOutUser">Sign out</button>
+            <router-link to="/cart">
+                <button>Shopping Cart</button>
+            </router-link>
+        </div>
+
     </div>
 </template>
 
 <script>
 import logo from '@/assets/logo-hexagon.svg';
+import { getAuth, signOut } from 'firebase/auth';
+import { ref } from 'vue';
 
 export default {
     name: 'NavBar',
-    setup() {
+    props: ['user'],
+    setup(props) {
+        const loggedUser = ref(props.user);
+
+        const signOutUser = () => {
+            const auth = getAuth();
+            signOut(auth);
+        }
 
         return {
-            logo
+            logo,
+            loggedUser,
+            signOutUser,
         }
     }
 }

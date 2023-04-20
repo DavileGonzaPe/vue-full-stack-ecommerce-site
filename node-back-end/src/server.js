@@ -32,7 +32,7 @@ async function start() {
     // Get user shopping cart
     app.get('/api/users/:userId/cart', async (req, res) => {
         const user = await db.collection('users').findOne({ id: req.params.userId });
-        const populatedCart = await populateCartIds(user.cartItems);
+        const populatedCart = await populateCartIds(user?.cartItems || []);
         res.json(populatedCart);
     });
 
@@ -53,7 +53,7 @@ async function start() {
         });
 
         const user = await db.collection('users').findOne({ id: req.params.userId });
-        const populatedCart = await populateCartIds(user.cartItems);
+        const populatedCart = await populateCartIds(user?.cartItems || []);
         res.json(populatedCart);
     });
 
@@ -67,7 +67,7 @@ async function start() {
         });
 
         const user = await db.collection('users').findOne({ id: req.params.userId });
-        const populatedCart = await populateCartIds(user.cartItems);
+        const populatedCart = await populateCartIds(user?.cartItems || []);
         res.json(populatedCart);
     })
 
